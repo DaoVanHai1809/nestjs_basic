@@ -16,7 +16,7 @@ export class UsersController {
   getUsers() {
     return [
       {
-        username: 'Haidv',
+        username: 'Haidv123',
         email: 'dajoa@gmail.com',
       },
     ];
