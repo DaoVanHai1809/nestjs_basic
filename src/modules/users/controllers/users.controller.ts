@@ -33,7 +33,7 @@ export class UsersController {
   }
 
   @Post('create')
-  @UsePipes(new ValidationPipe())
+  // @UsePipes(new ValidationPipe()) // in main.ts setup globally
   createUser(@Body(ValidateCreateUserPipe) userData: CreateUserDto) {
     console.log('success', userData);
     return {};
