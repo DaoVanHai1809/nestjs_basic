@@ -5,12 +5,16 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 import { CreateUserDto } from '../dtos/users.dto';
+import { AuthGuard } from '../guards/auth.guard';
+import { ValidateCreateUserPipe } from '../pipes/validate-create-user.pipe';
 
 @Controller('users')
+@UseGuards(AuthGuard)
 export class UsersController {
   @Get()
   getUsers() {
@@ -30,7 +34,7 @@ export class UsersController {
 
   @Post('create')
   @UsePipes(new ValidationPipe())
-  createUser(@Body() userData: CreateUserDto) {
+  createUser(@Body(ValidateCreateUserPipe) userData: CreateUserDto) {
     console.log('success', userData);
     return {};
   }
