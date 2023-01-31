@@ -1,0 +1,22 @@
+# create a Docker image feom source code
+version: '3.8'
+services:
+  dev-database:
+    image: postgres:15.0
+    container_name: dev-database
+    ports:
+      - 5434:5432 #{port in host(myPC)} : {port in container}
+    #environment variables, like: db's usermane, password...
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: testdb
+    networks:
+      - nestjs-network
+networks:
+  nestjs-network:
+#create container,network,...form "docker composer" file:
+#-d: deamon/background mode
+#docker compose up -d
+#how to remove container+volumes
+#docker compose rm dev-database --stop --force --volumes
