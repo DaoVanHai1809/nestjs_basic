@@ -1,22 +1,40 @@
-# create a Docker image feom source code
 version: '3.8'
 services:
-  dev-database:
-    image: postgres:15.0
-    container_name: dev-database
+  nest-api:
+    container_name: nest-api
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - 5434:5432 #{port in host(myPC)} : {port in container}
-    #environment variables, like: db's usermane, password...
+      - 5000:3000
+    depends_on:
+      - postgres
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: testdb
-    networks:
-      - nestjs-network
-networks:
-  nestjs-network:
-#create container,network,...form "docker composer" file:
-#-d: deamon/background mode
-#docker compose up -d
-#how to remove container+volumes
-#docker compose rm dev-database --stop --force --volumes
+      - DATABASE_URL=postgresql://nestpro:123456@postgres:5432/nest_db?schema=public
+      - GENERATE_SOURCEMAP=false
+  postgres:
+    image: postgres:14
+    container_name: postgresdb
+    restart: always
+    environment:
+      - POSTGRES_DB=nest_db
+      - POSTGRES_USER=nestpro
+      - POSTGRES_PASSWORD=123456
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - '9003:80'
+volumes:
+  postgres:
+    driver: local
+  pgadmin:
+    driver: local
