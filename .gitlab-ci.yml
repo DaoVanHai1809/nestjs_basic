@@ -1,2 +1,23 @@
-test:
-    script: echo "hello world 12"
+stages:
+  - build
+  - test
+
+build-laptop:
+    image: alpine
+    stage: build
+    script:
+        - echo "Building a laptop"
+        - mkdir build
+        - touch build/laptop.txt
+        - echo "mainboard" >> build/laptop.txt
+        - cat build/laptop.txt
+        - echo "keyboard" >> build/laptop.txt
+    artifacts:
+        paths:
+            - build
+
+test-laptop:
+    image: alpine
+    stage: test
+    script:
+        - test -f build/laptop.txt
