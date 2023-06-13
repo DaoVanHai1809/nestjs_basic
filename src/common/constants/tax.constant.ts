@@ -1,0 +1,3 @@
+
+export const TAX_OWNER = 11000000;
+export const TAX_DEPENDENT_PERSON = 4400000;

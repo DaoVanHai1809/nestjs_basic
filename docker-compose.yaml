@@ -5,21 +5,37 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    networks:
+      - shared-network
     ports:
       - 5000:3000
     depends_on:
       - postgres
     environment:
-      - DATABASE_URL=postgresql://nestpro:123456@postgres:5432/nest_db?schema=public
+      - DATABASE_URL=postgresql://nestjwtdb:postgres@postgres:5432/nest_db?schema=public
       - GENERATE_SOURCEMAP=false
+
+  # redis:
+  #   build:
+  #     context: ./docker/redis
+  #   image: myredis
+  #   privileged: true
+  #   command: sh -c "./init.sh"
+  #   ports:
+  #     - ${REDIS_PORT:-6379}:6379
+  #   volumes:
+  #     - redis-data:/data:rw
+
   postgres:
     image: postgres:14
     container_name: postgresdb
     restart: always
     environment:
       - POSTGRES_DB=nest_db
-      - POSTGRES_USER=nestpro
-      - POSTGRES_PASSWORD=123456
+      - POSTGRES_USER=nestjwtdb
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - shared-network
     ports:
       - 5432:5432
     volumes:
@@ -29,12 +45,71 @@ services:
     environment:
       - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    networks:
+      - shared-network
     volumes:
       - pgadmin:/var/lib/pgadmin
     ports:
       - '9003:80'
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.0
+    container_name: elasticsearch
+    restart: always
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - shared-network
+
+  kibana:
+    container_name: kibana
+    image: docker.elastic.co/kibana/kibana:7.4.0
+    restart: always
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200 # address of elasticsearch docker container which kibana will connect
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
+    networks:
+      - shared-network
+  # Logstash:
+  #   image: logstash:7.16.2
+  #   container_name: logstash
+  #   restart: always
+  #   volumes:
+  #   - ./logstash/:/logstash_dir
+  #   command: logstash -f /logstash_dir/logstash.conf 
+  #   depends_on:
+  #     - Elasticsearch
+  #   ports:
+  #   - '9600:9600'
+  #   environment:
+  #     LS_JAVA_OPTS: "-Xmx256m -Xms256m"    
+  #   networks:
+  #     - shared-network
 volumes:
   postgres:
     driver: local
   pgadmin:
     driver: local
+  # redis-data:
+  #   driver: local
+  elasticsearch-data:
+    driver: local
+networks:
+  shared-network:
