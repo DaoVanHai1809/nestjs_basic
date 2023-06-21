@@ -1,0 +1,17 @@
+module.exports = {
+  default: {
+    paths: ['acceptance/**/*.feature'],
+    format: ['progress-bar', '@cucumber/pretty-formatter'],
+    formatOptions: {
+      theme: {
+        'feature keyword': ['magenta', 'bold'],
+        'scenario keyword': ['magenta', 'bold'],
+        'step keyword': ['bold'],
+      },
+      snippetInterface: 'synchronous',
+    },
+    require: ['acceptance/step-definitions/**/*.ts'],
+    requireModule: ['ts-node/register'],
+    publishQuiet: true,
+  },
+};
