@@ -1,4 +1,4 @@
-import * as moment from 'moment';
+import moment from 'moment';
 
 export function dateRound(
   date: moment.Moment,
@@ -21,8 +21,8 @@ export function dateCeil(
   return moment(Math.ceil(+date / +duration) * +duration);
 }
 
-export function convertTimeToDecimal(timeString:string) {
-  const timeParts = timeString.split(':') ;
+export function convertTimeToDecimal(timeString: string) {
+  const timeParts = timeString.split(':');
   const hours = parseFloat(timeParts[0]);
   let minutes = 0;
 

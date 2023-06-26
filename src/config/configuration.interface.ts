@@ -57,12 +57,12 @@ export interface Configuration {
     name: string;
     from: string;
     retries: number;
-    ses?: {
+    ses: {
       accessKeyId: string;
       secretAccessKey: string;
       region: string;
     };
-    transport?: {
+    transport: {
       host: string;
       port: number;
       secure: boolean;

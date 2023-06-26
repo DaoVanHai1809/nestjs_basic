@@ -1,19 +1,77 @@
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsEmail,
+  IsIn,
+  IsLocale,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Length,
+  MinLength,
+} from 'class-validator';
 
 export class RegisterDto {
-  @IsNotEmpty()
   @IsString()
-  firstName: string;
-
   @IsNotEmpty()
-  @IsString()
-  lastName: string;
+  token: string;
 
-  @IsNotEmpty()
-  @IsString()
-  password: string;
-
-  @IsNotEmpty()
   @IsEmail()
-  email: string;
+  @IsNotEmpty()
+  email!: string;
+
+  @IsString()
+  @IsOptional()
+  @IsNotEmpty()
+  password?: string | null;
+
+  // @IsBoolean()
+  // @IsOptional()
+  // ignorePwnedPassword?: boolean;
+
+  @IsString()
+  @IsOptional()
+  @IsNotEmpty()
+  phone: string;
+
+  @IsString()
+  @IsOptional()
+  @IsNotEmpty()
+  lastName: string | null;
+
+  @IsString()
+  @IsOptional()
+  @IsNotEmpty()
+  firstName: string | null;
+
+  @IsString()
+  @IsOptional()
+  @IsNotEmpty()
+  birthday: Date;
+
+  @IsOptional()
+  @IsNotEmpty()
+  streetAddress: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  apartmentNumber: string;
+
+  @IsOptional()
+  @IsNotEmpty()
+  city: string;
+
+  @IsString()
+  @IsOptional()
+  @IsNotEmpty()
+  prefecture: string;
+
+  @IsString()
+  @IsOptional()
+  @IsNotEmpty()
+  postCode: string;
+
+  @IsBoolean()
+  @IsOptional()
+  ignorePwnedPassword?: boolean;
 }
