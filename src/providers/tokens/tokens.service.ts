@@ -32,10 +32,12 @@ export class TokensService {
     expiresIn?: string,
     options?: SignOptions,
   ) {
+    console.log({ subject, payload, expiresIn, options });
+
     if (typeof payload === 'number') payload = payload.toString();
     return sign(
       payload,
-      this.configService.get<string>('security.jwtSecret') ?? '',
+      this.configService.get<string>('security.jwtSecret') ?? 'staart',
       {
         ...options,
         subject,
@@ -52,14 +54,10 @@ export class TokensService {
    */
   verify<T>(subject: string, token: string, options?: VerifyOptions) {
     try {
-      return verify(
-        token,
-        this.configService.get<string>('security.jwtSecret') ?? '',
-        {
-          ...options,
-          subject,
-        },
-      ) as any as T;
+      return verify(token, '1h', {
+        ...options,
+        subject,
+      }) as any as T;
     } catch (error) {
       console.log(error);
       throw new UnauthorizedException(MESSAGE_INVALID_TOKEN, INVALID_TOKEN);

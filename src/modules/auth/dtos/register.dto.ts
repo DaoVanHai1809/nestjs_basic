@@ -21,55 +21,15 @@ export class RegisterDto {
   email!: string;
 
   @IsString()
-  @IsOptional()
   @IsNotEmpty()
-  password?: string | null;
-
-  // @IsBoolean()
-  // @IsOptional()
-  // ignorePwnedPassword?: boolean;
+  password: string;
 
   @IsString()
-  @IsOptional()
   @IsNotEmpty()
-  phone: string;
+  name: string;
 
-  @IsString()
   @IsOptional()
-  @IsNotEmpty()
-  lastName: string | null;
-
-  @IsString()
-  @IsOptional()
-  @IsNotEmpty()
-  firstName: string | null;
-
-  @IsString()
-  @IsOptional()
-  @IsNotEmpty()
   birthday: Date;
-
-  @IsOptional()
-  @IsNotEmpty()
-  streetAddress: string;
-
-  @IsOptional()
-  @IsNotEmpty()
-  apartmentNumber: string;
-
-  @IsOptional()
-  @IsNotEmpty()
-  city: string;
-
-  @IsString()
-  @IsOptional()
-  @IsNotEmpty()
-  prefecture: string;
-
-  @IsString()
-  @IsOptional()
-  @IsNotEmpty()
-  postCode: string;
 
   @IsBoolean()
   @IsOptional()

@@ -11,15 +11,22 @@ datasource db {
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  email      String   @unique
-  password   String
-  firstName  String?
-  lastName   String?
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  // relationship
-  note       Note[]
+  id                   Int              @id @default(autoincrement())
+  uuid                 String           @unique @default(uuid())
+  password             String
+  gender               Gender           @default(UNKNOWN)
+  name                 String
+  prefersEmailId       Int?
+  role                 UserRole         @default(USER)
+  checkLocationOnLogin Boolean          @default(false)
+  created_at           DateTime         @default(now())
+  updated_at           DateTime         @updatedAt
+  deletedFlg           Boolean          @default(false)
+  emails               Email[]          @relation("userEmail")
+  prefersEmail         Email?           @relation("userPrefersEmail", fields: [prefersEmailId], references: [id])
+  Note                 Note[]
+  approvedSubnets      ApprovedSubnet[] @relation("userApprovedSubnet")
+  sessions             Session[]        @relation("userSession")
 
   @@map("users")
 }
@@ -35,4 +42,66 @@ model Note {
   user       User     @relation(fields: [userId], references: [id])
 
   @@map("notes")
+}
+
+model Email {
+  createdAt  DateTime @default(now())
+  email      String   @unique
+  emailSafe  String   @unique
+  id         Int      @id @default(autoincrement())
+  isVerified Boolean  @default(false)
+  updatedAt  DateTime @updatedAt
+  userId     Int
+  user       User     @relation("userEmail", fields: [userId], references: [id])
+  users      User[]   @relation("userPrefersEmail")
+
+  @@index([userId], name: "userId")
+}
+
+model ApprovedSubnet {
+  createdAt   DateTime @default(now())
+  id          Int      @id @default(autoincrement())
+  subnet      String
+  city        String?
+  region      String?
+  timezone    String?
+  countryCode String?
+  updatedAt   DateTime @updatedAt
+  userId      Int
+  user        User     @relation("userApprovedSubnet", fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model Session {
+  createdAt       DateTime @default(now())
+  id              Int      @id @default(autoincrement())
+  ipAddress       String
+  token           String
+  updatedAt       DateTime @updatedAt
+  userAgent       String?
+  city            String?
+  region          String?
+  timezone        String?
+  countryCode     String?
+  browser         String?
+  operatingSystem String?
+  userId          Int
+  user            User     @relation("userSession", fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  NONBINARY
+  UNKNOWN
+}
+
+enum UserRole {
+  SUDO
+  MANAGER
+  ADMIN
+  USER
 }
